@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 
 from myApp.models import *
 from django.contrib.auth import authenticate,login,logout
@@ -76,8 +76,48 @@ def logoutPage(request):
 
 @login_required
 def profilePage(request):
+    skills = JobModel.skills
+    context = {
+        'skills': skills,
+    }
     
-    return render(request,"profilePage.html")
+    return render(request,"profilePage.html", context)
+
+@login_required
+def editProfile(request):
+    if request.method=='POST':
+    
+        username=request.POST.get("username")
+        email=request.POST.get("email")
+        user_type=request.POST.get("user_type")
+        contact_no=request.POST.get("contact_no")
+        skills=request.POST.get("skills")
+        old_pic=request.POST.get("old_pic")
+        new_pic=request.FILES.get("new_pic")
+            
+            
+        user=customUser(
+            username=username,
+            email=email,
+            user_type=user_type,
+            contact_no=contact_no,
+            skills=skills,
+        )
+        if new_pic:
+            user.Profile_Pic=new_pic
+        else:
+            user.Profile_Pic=old_pic
+        if user_type=='seeker':
+            seekerProfileModel(user=user)
+            
+        elif user_type=='recruiter':
+            recruiterProfileModel(user=user)
+        user.save()    
+        
+        return redirect("profilePage")
+
+    
+    return render(request,"editProfile.html")
 
 @login_required
 def createdJobs(request):
@@ -143,6 +183,69 @@ def addJob(request):
         "category": JobModel.CATEGORY
     }
     return render(request, 'addJob.html', context)
+
+def jobFeed(req):
+    jobs = JobModel.objects.all()
+    context = {
+        'jobs': jobs
+    }
+    return render(req, "jobFeed.html", context)
+
+
+def appliedJobs(req):
+    applied_jobs = ApplyJob.objects.all()
+    context = {
+        "applyJob":applied_jobs
+    }
+    return render(req, "appliedJobsBySeeker.html", context)
+
+
+
+
+def applyNow(req, id):
+    job = get_object_or_404(JobModel, id=id)
+    try:
+        applyJob = ApplyJob.objects.get(job=job)
+    except ApplyJob.DoesNotExist:
+        applyJob = None
+    context = {
+        'job':job,
+        'applyJob':applyJob,
+    }
+
+    if req.method == "POST":
+        user = req.user
+        job = job
+        resume = req.FILES.get("resume")
+        coverLetter = req.POST.get('cover_letter')
+        apply = ApplyJob(
+            user = user,
+            job=job,
+            resume = resume,
+            coverLetter = coverLetter
+        )
+        apply.save()
+        return redirect('appliedJobs')
+
+    return render(req, "applyNow.html", context)
+
+
+def searchJob(req):
+    query = req.GET.get('search')
+    if query:
+        jobs = JobModel.objects.filter(
+            Q(title__icontains=query) | 
+            Q(category__icontains=query) | 
+            Q(skills__icontains=query) | 
+            Q(description__icontains=query)
+        )
+    else: 
+        jobs = JobModel.objects.none()        
+    context={
+        'query':query,
+        'jobs':jobs
+    }
+    return render(req, "searchJob.html", context)
 
 
 

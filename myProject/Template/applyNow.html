@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+
+<h1>Apply Now in {{job.title}} Post.</h1>
+<div class="row m-0 p-0">
+      <div class="card col-lg-4 my-4 py-3">
+        <img src="/{{job.job_image}}" alt="Avatar" style="width:100%">
+        <div class="container">
+          <h4><b>{{job.title}}</b></h4> 
+          <p>Job Type: <b>{{job.category}}</b></p> 
+          <p>{{job.description}}</p> 
+          <p>Number of Openings: <b>{{job.openings}}</b></p> 
+          <p>Required Skills: <b>{{job.skills}}</b></p> 
+          <p>Posted By: <b>{{job.user.username}}</b></p> 
+          {% if request.user.user_type == "seeker" %}
+            
+            {% if applyJob %}
+                <h2 class="text-danger fw-bold fs-5">You have Already Applied for this job.</h2>
+            {% else %}
+                <h2 class="fs-5 fw-bold text-success">Applying for this job open.</h2>
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="">Upload Resume</label>
+                        <input class="form-control" type="file" name="resume" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Write a Cover Letter</label>
+                        <textarea class="form-control" type="text" name="cover_letter" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Apply" class="btn btn-warning">
+                    </div>
+                </form>    
+            {% endif %}
+                
+          {% endif %}
+        </div>
+      </div>
+  </div>
+    
+{% endblock body %}
+    
+
+
+
+
+

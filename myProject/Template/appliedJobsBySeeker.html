@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<style>
+    #customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+
+<h1>Applied Jobs by Seeker.</h1>
+
+<table id="customers">
+    <tr>
+      <th>Job Title</th>
+      <th>Cover Letter</th>
+      <th>Resume</th>
+      {% comment %} <!-- <th>Actions</th> --> {% endcomment %}
+    </tr>
+    
+    {% for aj in applyJob %}
+        <tr>
+            <td>{{aj.job.title}}</td>
+            <td style="width: 400px;">{{aj.coverLetter}}</td>
+            <td>{{aj.resume}}</td>
+            {% comment %} <!-- <td>
+                <a href="{% url 'viewJob' aj.id %}">view</a>
+                <a href="{% url 'editJob' aj.id %}">edit</a>
+                <a href="{% url 'deleteJob' aj.id %}">delete</a>
+            </td> --> {% endcomment %}
+        </tr>
+    {% endfor %}
+        
+
+    
+  </table>
+
+
+{% endblock body %}
+
+    
+

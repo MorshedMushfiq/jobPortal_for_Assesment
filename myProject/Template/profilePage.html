@@ -82,6 +82,7 @@
     {% if request.user.user_type == 'seeker' %}
 
     <h1>Seeker</h1>
+    <a href="{% url 'appliedJobs' %}">Applied Jobs</a>
         
     {% endif %}
         
@@ -90,10 +91,33 @@
     <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
     <p><strong>Email:</strong> {{ request.user.email }}</p>
     <p><strong>Contact Number:</strong> {{ request.user.contact_no }}</p>
-
-    <div class="button-container">
-
-
-    </div>
+    <p><a href="{% url 'editProfile' %}">Edit Profile</a></p>
 </div>
+
+{% if request.user.user_type == 'seeker' %}
+<h2>Skill Related Jobs.</h2>
+{% if request.user.skills == skills  %}
+<div class="row m-0 p-0">
+    {% for j in jobs %}
+    <div class="card col-lg-4">
+        <img src="/{{j.job_image}}" alt="Avatar" style="width:100%">
+        <div class="container">
+        <h4><b>{{j.title}}</b></h4> 
+        <p>Job Type: <b>{{j.category}}</b></p> 
+        <p>Number of Openings: <b>{{j.openings}}</b></p> 
+        <p>Required Skills: <b>{{j.skills}}</b></p> 
+        {% if request.user.user_type == "seeker" %}
+            <a href="{% url 'applyNow' j.id %}" class="btn btn-primary">Apply Now</a>
+        {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No jobs available.</p>
+    {% endfor %}
+</div>
+
+{% endif %}
+       
+
+{% endif %}
 {% endblock body %}
