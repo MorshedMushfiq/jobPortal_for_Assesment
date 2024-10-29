@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<style>
+    #customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+
+<h1>Created Jobs by recruiters.</h1>
+
+<table id="customers">
+    <tr>
+      <th>Job Title</th>
+      <th>Category</th>
+      <th>Job Description</th>
+      <th>Vacancy</th>
+      <th>Skills</th>
+      <th>Job Image</th>
+      <th>Actions</th>
+    </tr>
+    
+    {% for j in jobs %}
+        <tr>
+            <td>{{j.title}}</td>
+            <td>{{j.category}}</td>
+            <td>{{j.description}}</td>
+            <td>{{j.openings}}</td>
+            <td>{{j.skills}}</td>
+            
+            <td>
+                <img src="/{{j.job_image}}" style="width: 100px; height: 100px;" alt="">
+            </td>
+            <td>
+                <a href="{% url 'viewJob' j.id %}">view</a>
+                <a href="{% url 'editJob' j.id %}">edit</a>
+                <a href="{% url 'deleteJob' j.id %}">delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+        
+
+    
+  </table>
+
+
+
+
+
+
+    
+{% endblock body %}
+    

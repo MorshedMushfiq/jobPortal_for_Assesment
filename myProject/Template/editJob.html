@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<style>
+    input[type=text],[type=file], select, textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+
+
+<h1>Edit Your Job</h1>
+<div>
+    <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="fname">Job Title</label>
+      <input type="hidden" id="fname" value="{{data.id}}" name="job_id">
+      <input type="text" id="fname" value="{{data.title}}" name="title">
+
+      <label for="fname">Job Description</label>
+      <textarea type="text" id="fname" name="description">{{data.description}}</textarea>
+
+  
+      <label for="lname">Number of openings</label>
+      <input type="text" id="lname" name="openings" value="{{data.openings}}">
+
+      <label for="lname">Skills</label>
+      <input type="text" id="lname" name="skills" value="{{data.skills}}">
+  
+      <label for="country">Category</label>
+      <select id="country" name="category">
+        <option value="" selected disabled>Select Category</option>
+        
+        {% for value, display_name in category %}
+            <option value="{{value}}" 
+            
+            {% if value == data.category %}
+                selected
+            {% endif %}
+                
+            >{{display_name}}</option>
+        {% endfor %}
+      </select><br>
+      <img src="/{{data.job_image}}" style="width: 100px; height: 100px;" alt=""><br>
+      <label for="fname">Job Image/ Company Logo</label><br>
+
+      <input type="hidden" id="fname" name="old_job_image" value="{{data.job_image}}">
+      <input type="file" id="fname" name="new_job_image">
+    
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+    
+{% endblock body %}
+    
