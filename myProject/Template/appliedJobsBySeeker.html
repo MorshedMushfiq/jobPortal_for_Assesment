@@ -27,7 +27,7 @@
 }
 </style>
 
-<h1>Applied Jobs by Seeker.</h1>
+<h1>Applied Jobs by Seeker({{request.user.username}}).</h1>
 
 <table id="customers">
     <tr>
@@ -47,6 +47,10 @@
                 <a href="{% url 'editJob' aj.id %}">edit</a>
                 <a href="{% url 'deleteJob' aj.id %}">delete</a>
             </td> --> {% endcomment %}
+        </tr>
+      {% empty %}
+        <tr >
+          <td class="text-center" colspan="3">You don't have applied any jobs not yet</td>
         </tr>
     {% endfor %}
         

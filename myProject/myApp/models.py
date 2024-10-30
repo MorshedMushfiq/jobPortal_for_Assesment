@@ -19,6 +19,7 @@ class customUser(AbstractUser):
 class seekerProfileModel(models.Model):
     
     user=models.OneToOneField(customUser,on_delete=models.CASCADE,related_name='seekerProfile')
+    skills = models.CharField(max_length=255, null=True)
    
     def __str__(self):
         return f"{self.user.username}"

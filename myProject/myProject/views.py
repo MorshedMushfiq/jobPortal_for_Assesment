@@ -77,43 +77,52 @@ def logoutPage(request):
 @login_required
 def profilePage(request):
     skills = JobModel.skills
+        # Assume the user is logged in and has a seeker profile
+    seeker = seekerProfileModel.objects.get(user=request.user)
+    seeker_skills = (seeker.skills or "").split(",")  # Split skills into a list
+
+    # Build Q object for matching any seeker skill with job skills
+    query = Q()
+    for skill in seeker_skills:
+        query |= Q(skills__icontains=skill.strip())
+
+    # Get jobs where at least one required skill matches seeker's skills
+    jobs = JobModel.objects.filter(query).distinct()
     context = {
         'skills': skills,
+        'jobs': jobs,
+        'seeker': seeker,
     }
-    
+
     return render(request,"profilePage.html", context)
 
 @login_required
 def editProfile(request):
     if request.method=='POST':
+        current_user =  request.user
+
     
-        username=request.POST.get("username")
-        email=request.POST.get("email")
-        user_type=request.POST.get("user_type")
-        contact_no=request.POST.get("contact_no")
-        skills=request.POST.get("skills")
+        current_user.username=request.POST.get("username")
+        current_user.first_name=request.POST.get("first_name")
+        current_user.last_name=request.POST.get("last_name")
+        current_user.email=request.POST.get("email")
+        current_user.user_type=request.POST.get("user_type")
+        current_user.contact_no=request.POST.get("contact_no")
+        current_user.skills=request.POST.get("skills")
         old_pic=request.POST.get("old_pic")
         new_pic=request.FILES.get("new_pic")
-            
-            
-        user=customUser(
-            username=username,
-            email=email,
-            user_type=user_type,
-            contact_no=contact_no,
-            skills=skills,
-        )
+
+
         if new_pic:
-            user.Profile_Pic=new_pic
+            current_user.Profile_Pic=new_pic
         else:
-            user.Profile_Pic=old_pic
-        if user_type=='seeker':
-            seekerProfileModel(user=user)
+            current_user.Profile_Pic=old_pic
+        if current_user.user_type=='seeker':
+            seekerProfileModel(user=current_user)
             
-        elif user_type=='recruiter':
-            recruiterProfileModel(user=user)
-        user.save()    
-        
+        elif current_user.user_type=='recruiter':
+            recruiterProfileModel(user=current_user) 
+        current_user.save()
         return redirect("profilePage")
 
     
@@ -193,7 +202,7 @@ def jobFeed(req):
 
 
 def appliedJobs(req):
-    applied_jobs = ApplyJob.objects.all()
+    applied_jobs = ApplyJob.objects.filter(user=req.user)
     context = {
         "applyJob":applied_jobs
     }

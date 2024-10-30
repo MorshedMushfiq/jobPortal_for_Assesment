@@ -70,10 +70,16 @@
             
             {% csrf_token %}
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{request.user.username}}" required>
+            <input type="text" id="username" name="username" value="{{request.user.username}}" >
+
+            <label for="username">First Name:</label>
+            <input type="text" id="username" name="first_name" value="{{request.user.first_name}}" >
+
+            <label for="username">Last Name:</label>
+            <input type="text" id="username" name="last_name" value="{{request.user.last_name}}" >
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{request.user.email}}" required>
+            <input type="email" id="email" name="email" value="{{request.user.email}}" >
 
             <label for="password">Profile Pic</label>
             <img src="/{{request.user.Profile_Pic}}" style="width: 100px; height: 100px;" alt="">
@@ -81,32 +87,12 @@
             <input type="file" id="password" name="new_pic" >
 
             <label for="password">Contact Number</label>
-            <input type="text" id="password" name="contact_no" value="{{request.user.contact_no}}" required>
+            <input type="text" id="password" name="contact_no" value="{{request.user.contact_no}}" >
 
             
             <label for="password">Skills</label>
-            <input type="text" id="password" name="skills" value="{{request.user.skills}}" required>
+            <input type="text" id="password" name="skills" value="{{request.user.skills}}" >
 
-
-
-            <label for="user_type">User Type:</label>
-            <select id="user_type" name="user_type" required>
-                <option value="" selected disabled>Select...</option>
-                <option value="seeker"
-                
-                {% if request.user_user_type ==  'seeker' %}
-                selected
-                    
-                {% endif %}
-                    
-                >Seeker</option>
-                <option value="recruiter"
-                {% if request.user_user_type ==  'recruiter' %}
-                selected
-                    
-                {% endif %}
-                >Recruiter</option>
-            </select>
 
             <button type="submit">Update Profile</button>
             
