@@ -83,6 +83,7 @@
 
     <h1>Seeker</h1>
     <a href="{% url 'appliedJobs' %}">Applied Jobs</a>
+    <p><strong>Skills:</strong> {{ request.user.skills }}</p>
         
     {% endif %}
         
@@ -91,7 +92,7 @@
     <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
     <p><strong>Email:</strong> {{ request.user.email }}</p>
     <p><strong>Contact Number:</strong> {{ request.user.contact_no }}</p>
-    <p><strong>Skills:</strong> {{ request.user.skills }}</p>
+
     <p><a href="{% url 'editProfile' %}">Edit Profile</a></p>
 </div>
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render,redirect, get_object_or_404, HttpResponse
 
 from myApp.models import *
 from django.contrib.auth import authenticate,login,logout
@@ -76,37 +76,50 @@ def logoutPage(request):
 
 @login_required
 def profilePage(request):
-    skills = JobModel.skills
-        # Assume the user is logged in and has a seeker profile
-    seeker = seekerProfileModel.objects.get(user=request.user)
-    seeker_skills = (seeker.skills or "").split(",")  # Split skills into a list
+    skills = JobModel.skills  # Ensure this is defined correctly in your model
+    # Check if the user is a recruiter
+    try:
+        recruiter_profile = recruiterProfileModel.objects.get(user=request.user)
+        context = {
+            'profile': recruiter_profile,
+            'is_recruiter': True,
+        }
+    except recruiterProfileModel.DoesNotExist:
+        # If the user is not a recruiter, check for seeker profile
+        seeker = seekerProfileModel.objects.filter(user=request.user).first()
+        if seeker:
+             # Split and strip seeker skills into a unique set
+            seeker_skills = set(skill.strip() for skill in (seeker.skills or "").split(",") if skill.strip())
+            
+            # Build Q object for matching any seeker skill with job skills
+            query = Q()
+            for skill in seeker_skills:
+                query |= Q(skills__icontains=skill)
 
-    # Build Q object for matching any seeker skill with job skills
-    query = Q()
-    for skill in seeker_skills:
-        query |= Q(skills__icontains=skill.strip())
-
-    # Get jobs where at least one required skill matches seeker's skills
-    jobs = JobModel.objects.filter(query).distinct()
-    context = {
-        'skills': skills,
-        'jobs': jobs,
-        'seeker': seeker,
-    }
-
-    return render(request,"profilePage.html", context)
+            # Get jobs where at least one required skill matches seeker's skills
+            jobs = JobModel.objects.filter(query).distinct()
+            context = {
+                'profile': seeker,
+                'is_recruiter': False,
+                'skills': skills,
+                'jobs': jobs,
+            }
+        else:
+            # Handle case where neither profile exists
+            return HttpResponse("there is some problem")
+        
+       
+    return render(request, "profilePage.html", context)
 
 @login_required
 def editProfile(request):
     if request.method=='POST':
         current_user =  request.user
 
-    
         current_user.username=request.POST.get("username")
         current_user.first_name=request.POST.get("first_name")
         current_user.last_name=request.POST.get("last_name")
         current_user.email=request.POST.get("email")
-        current_user.user_type=request.POST.get("user_type")
         current_user.contact_no=request.POST.get("contact_no")
         current_user.skills=request.POST.get("skills")
         old_pic=request.POST.get("old_pic")
@@ -118,7 +131,13 @@ def editProfile(request):
         else:
             current_user.Profile_Pic=old_pic
         if current_user.user_type=='seeker':
-            seekerProfileModel(user=current_user)
+            # Get or create the seeker profile
+            seeker_profile, created = seekerProfileModel.objects.get_or_create(user=current_user)
+
+            # Update skills
+            seeker_profile.skills = request.POST.get("skills", seeker_profile.skills)  # Keep existing skills if not provided
+            seeker_profile.save()  # Save the profile instance
+
             
         elif current_user.user_type=='recruiter':
             recruiterProfileModel(user=current_user) 
@@ -214,7 +233,7 @@ def appliedJobs(req):
 def applyNow(req, id):
     job = get_object_or_404(JobModel, id=id)
     try:
-        applyJob = ApplyJob.objects.get(job=job)
+        applyJob = ApplyJob.objects.get(job=job, user=req.user)
     except ApplyJob.DoesNotExist:
         applyJob = None
     context = {

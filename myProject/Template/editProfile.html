@@ -90,8 +90,13 @@
             <input type="text" id="password" name="contact_no" value="{{request.user.contact_no}}" >
 
             
+            
+            {% if request.user.user_type == "seeker" %}
             <label for="password">Skills</label>
             <input type="text" id="password" name="skills" value="{{request.user.skills}}" >
+                
+            {% endif %}
+                
 
 
             <button type="submit">Update Profile</button>
