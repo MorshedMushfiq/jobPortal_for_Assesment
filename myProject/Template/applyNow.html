@@ -4,9 +4,9 @@
 
 {% block body %}
 
-<h1>Apply Now in {{job.title}} Post.</h1>
+<h1 class="text-center py-2">Apply Now in {{job.title}} Post.</h1>
 <div class="row m-0 p-0">
-      <div class="card col-lg-4 my-4 py-3">
+      <div class="card border-warning shadow col-lg-4 my-2 mx-auto py-2">
         <img src="/{{job.job_image}}" alt="Avatar" style="width:100%">
         <div class="container">
           <h4><b>{{job.title}}</b></h4> 
@@ -25,11 +25,11 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="">Upload Resume</label>
-                        <input class="form-control" type="file" name="resume" required>
+                        <input class="form-control my-1" type="file" name="resume" required>
                     </div>
                     <div class="form-group">
                         <label for="">Write a Cover Letter</label>
-                        <textarea class="form-control" type="text" name="cover_letter" required></textarea>
+                        <textarea class="form-control my-1" type="text" name="cover_letter" required></textarea>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Apply" class="btn btn-warning">

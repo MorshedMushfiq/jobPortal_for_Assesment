@@ -63,9 +63,22 @@ def signInPage(request):
 
 @login_required
 def homePage(request):
+    totalUsers =  customUser.objects.all().count()
+    totalJobs =   JobModel.objects.all().count()
+    appliedJobs = ApplyJob.objects.all().count()
+    totalSeeker = seekerProfileModel.objects.all().count()
+    jobs =  JobModel.objects.all()[:3]
+
+
+
     
-    
-    return render(request,"homePage.html")
+    return render(request,"homePage.html", {
+        'totalUsers':totalUsers,
+        'totalJobs':totalJobs,
+        'totalAppliedJobs':appliedJobs,
+        'totalSeekers':totalSeeker,
+        'jobs':jobs,
+    })
 
 
 def logoutPage(request):
@@ -187,8 +200,11 @@ def editJob(request, id):
 
 def viewJob(request, id):
     view_job = JobModel.objects.get(id=id)
+    totalApplicants = ApplyJob.objects.filter(job=id).count()
+
     context = {
-        'jobs':view_job
+        'jobs':view_job,
+        'totalApplicants':totalApplicants,
     }
 
     return render(request, 'viewJob.html', context)

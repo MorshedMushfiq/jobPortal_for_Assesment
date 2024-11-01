@@ -5,7 +5,26 @@
 
 
 
-<h1>View Single Job</h1>
+<h1 class="text-center py-2">View Single Job</h1>
+
+<div class="row m-0 p-0">
+
+      <div class="card border-warning shadow my-2 mx-auto py-2 col-lg-4">
+        <img src="/{{jobs.job_image}}" alt="Avatar" style="width:100%">
+        <div class="container">
+          <h4><b>{{jobs.title}}</b></h4> 
+          <p>Job Type: <b>{{jobs.category}}</b></p> 
+          <p>{{jobs.description}}</p> 
+          <p>Number of Openings: <b>{{jobs.openings}}</b></p> 
+          <p>Required Skills: <b>{{jobs.skills}}</b></p> 
+          <p>Posted By: <b>{{jobs.user.username}}</b></p> 
+          {% if request.user.user_type == "seeker" %}
+            <a href="{% url 'applyNow' jobs.id %}" class="btn btn-primary">Apply Now</a>
+          {% endif %}
+          <a href="#" class="btn btn-primary">Applicants({{totalApplicants}})</a>
+        </div>
+      </div>
+  </div>
 
 
     
