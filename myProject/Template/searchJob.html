@@ -22,27 +22,36 @@
 }
 </style>
 
-<h1>Job Feed Page</h1>
-<div class="search">
-    <div class="form-group">
-      <form action="{% url 'searchJob' %}" method="GET">
-
-        <input type="text" class="form-control" name="search" placeholder="Search by Job Title, Category, Skills, Description">
-        <input type="submit" class="btn btn-success" value="Search">
-      </form>
-    </div>
+<div class="search mt-3">
+  <div class="form-group text-center mx-auto my-2">
+    <form class="d-flex flex-row justify-content-center gap-2" action="{% url 'searchJob' %}" method="GET">
+      <input type="text" class="form-control w-50" name="search" placeholder="Search by Job Title, Category, Skills, Description">
+      <button type="submit" class="btn btn-success w-25"><i class="fa fa-search"></i> Search</button>
+    </form>
   </div>
+</div>
   
 
-  <h2>You are searching for {{query}}</h2>
+  <h2 class="text-center py-3 mt-2">You are searching for <span class="text-danger fw-bold">"{{query}}"</span></h2>
 
-<div class="row m-0 p-0">
+<div class="row m-0 p-0 mx-auto">
   {% for j in jobs %}
-    <div class="card col-lg-4">
+    <div class="card col-lg-4 mx-auto">
       <img src="/{{j.job_image}}" alt="Avatar" style="width:100%">
       <div class="container">
         <h4><b>{{j.title}}</b></h4> 
-        <p>Job Type: <b>{{j.category}}</b></p> 
+        <p>Job Type: <b>
+           <!-- job type convert for human readable -->
+           {% if j.category == 'full_time' %}
+            Full Time
+          {% elif j.category == 'part_time' %}
+            Part Time
+          {% elif  j.category == 'project_based' %}
+            Project Based
+          {% else %}
+            Negotiable
+          {% endif %}
+          </b></p> 
         <p>{{j.description}}</p> 
         <p>Number of Openings: <b>{{j.openings}}</b></p> 
         <p>Required Skills: <b>{{j.skills}}</b></p> 
@@ -53,7 +62,7 @@
       </div>
     </div>
   {% empty %}
-    <p>No jobs available.</p>
+    <p class="text-center text-secondary fw-bold fs-4">No Jobs Available Right Now.</p>
   {% endfor %}
 </div>
 

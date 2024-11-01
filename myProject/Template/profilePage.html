@@ -98,7 +98,7 @@
 
 {% if request.user.user_type == 'seeker' %}
         {% if jobs %}
-        <h2>Skill Related Jobs</h2>
+        <h2 class="fw-bold">Skill Related Jobs</h2>
 
         <div class="row m-0 p-0">
             {% for job in jobs %}
@@ -116,9 +116,12 @@
               </div>
             {% endfor %}
         </div>
+        <div class="mx-auto my-2 pt-2 text-center">
+            <a class="btn btn-secondary w-25 fs-4 fst-italic fw-bold" href="{% url 'jobFeed' %}">See More &#8594;</a>
+        </div>
 
         {% else %}
-    <p>No matching jobs found.</p>
+    <p class="text-center text-danger fw-bold fs-4">No matching jobs found.</p>
     {% endif %}
 
 {% endif %}

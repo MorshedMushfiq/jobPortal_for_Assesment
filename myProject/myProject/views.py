@@ -110,7 +110,7 @@ def profilePage(request):
                 query |= Q(skills__icontains=skill)
 
             # Get jobs where at least one required skill matches seeker's skills
-            jobs = JobModel.objects.filter(query).distinct()
+            jobs = JobModel.objects.filter(query).distinct()[:3]
             context = {
                 'profile': seeker,
                 'is_recruiter': False,
